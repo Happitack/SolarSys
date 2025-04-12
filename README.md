@@ -55,6 +55,7 @@ To run this simulation locally, follow these steps:
 * Apply textures to celestial bodies.
 * Add a starfield background.
 * Implement UI controls for simulation time (pause, speed).
+* Implement UI controls for selection/focus of indiviudal bodies
 * Display information about selected bodies.
 * Implement variable-length orbit trails based on orbital period.
 * Add moons (e.g., Earth's Moon).
