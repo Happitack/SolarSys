@@ -1,9 +1,3 @@
-Right, good call! Now that it's successfully deployed, let's add the link to the README so people can easily find the live version.
-
-The best place for this is usually near the top, right after the title or description, to make it highly visible.
-
-Here's the updated README.md including a new "Live Demo" section:
-
 Markdown
 
 # Solar System Simulation (TypeScript & Three.js)
