@@ -65,7 +65,7 @@ export class SolarSystem {
             const positions = new Float32Array(config.MAX_TRAIL_POINTS * 3);
             const positionAttribute = new THREE.BufferAttribute(positions, 3);
             orbitGeometry.setAttribute('position', positionAttribute);
-            const orbitMaterial = new THREE.LineBasicMaterial({ color: 0xAAAAAA, transparent: true, opacity: 0.1 });
+            const orbitMaterial = new THREE.LineBasicMaterial({ color: 0xAAAAAA, transparent: true, opacity: 0.6 });
             const orbitLine = new THREE.Line(orbitGeometry, orbitMaterial);
             this.scene.add(orbitLine); // Add line to the scene
             this.orbitLines.set(planetBody, orbitLine); // Store line internally
@@ -73,7 +73,7 @@ export class SolarSystem {
     }
 
     // Method to update the visual aspects (meshes, trails) based on body data
-    public updateVisuals(): void {
+    public updateVisuals(effectiveDt: number): void {
         this.bodies.forEach(body => {
             // Update mesh position from body's physics state
             body.mesh.position.copy(body.position);
@@ -83,7 +83,7 @@ export class SolarSystem {
                 this.pointLight.position.copy(body.position);
             } else {
                 // Update rotation for planets
-                const angleIncrement = body.rotationFactor * config.VISUAL_ROTATION_SCALE_FACTOR * config.DT;
+                const angleIncrement = body.rotationFactor * config.VISUAL_ROTATION_SCALE_FACTOR * effectiveDt;
                 body.mesh.rotation.y += angleIncrement; // Rotate around local Y axis
 
                 // Update Orbit Trail
@@ -107,6 +107,12 @@ export class SolarSystem {
                     geometry.computeBoundingSphere(); // Important for visibility
                 }
             }
+        });
+    }
+
+    public setTrailsVisible(visible: boolean): void {
+        this.orbitLines.forEach((line) => {
+            line.visible = visible;
         });
     }
 }

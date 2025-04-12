@@ -21,7 +21,6 @@ function calculateGravitationalForce(body1: CelestialBody, body2: CelestialBody)
         return new THREE.Vector3(0, 0, 0); // Prevent division by zero
     }
 
-    const distance = Math.sqrt(distanceSquared)
     const forceMagnitude = (G * body1.mass * body2.mass) / distanceSquared;
     const forceVector = distanceVector.normalize().multiplyScalar(forceMagnitude);
     return forceVector;
