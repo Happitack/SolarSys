@@ -1,9 +1,11 @@
+// vite.config.ts
 import { defineConfig } from 'vite';
 
-export default defineConfig({
-    // Set the base path for deployment on GitHub Pages
-    // Replace 'SolarSys' with your GitHub repository name
-    base: 'https://github.com/Happitack/SolarSys/tree/main/SolarSys',
-    // You might have other Vite configurations here (e.g., plugins)
-    // Make sure to keep them if they exist.
-  });
+// Export a function that receives the command ('serve' or 'build')
+export default defineConfig(({ command }) => ({
+  // Set base conditionally
+  base: command === 'build'
+    ? '/SolarSys/' // Base path for GitHub Pages build
+    : '/',          // Use root base for local development server
+  // Other config...
+}));

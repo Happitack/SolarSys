@@ -23,8 +23,6 @@ export function setupSceneGraph(): SceneElements {
 
     // --- Skysphere Background ---
     const starTexture = textureLoader.load('/textures/8k_stars.jpg'); // Replace 'stars.jpg' with YOUR filename
-    //starTexture.wrapS = THREE.RepeatWrapping; // Optional: Helps if texture edges don't perfectly align
-    // starTexture.repeat.x = -1; // Usually not needed unless texture is mirrored
 
     // --- Explicitly Set Filtering & Encoding ---
     starTexture.minFilter = THREE.LinearMipmapLinearFilter; // Default - smooth mipmapping
@@ -32,7 +30,6 @@ export function setupSceneGraph(): SceneElements {
     const maxAnisotropy = renderer.capabilities.getMaxAnisotropy();
     starTexture.anisotropy = maxAnisotropy; // Keep anisotropy
     starTexture.colorSpace = THREE.SRGBColorSpace; // Set color space for texture
-    starTexture.needsUpdate = true; // Ensure updates are applied
 
     const skyGeometry = new THREE.SphereGeometry(3000, 64, 64); // Radius, Width Segments, Height Segments
     const skyMaterial = new THREE.MeshBasicMaterial({
