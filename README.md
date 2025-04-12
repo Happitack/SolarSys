@@ -1,5 +1,13 @@
 # Solar System Simulation (TypeScript & Three.js)
 
+## Live Demo
+
+🚀 **[View the live simulation here!](https://happitack.github.io/SolarSys/)** 🚀
+
+*(Note: Please allow a moment for initial loading)*
+
+---
+
 ## Description
 
 This project is a physically-based N-body simulation of our solar system, built using TypeScript and the Three.js library for 3D rendering. It aims to model the gravitational interactions between the Sun and the eight planets, calculating their orbits using the Velocity Verlet integration method for reasonable physical accuracy and stability.
@@ -12,11 +20,12 @@ The primary goal is to serve as a portfolio piece demonstrating skills in TypeSc
 * **8 Planets + Sun:** Includes the Sun and all eight planets of our solar system.
 * **Velocity Verlet Integration:** Uses a stable numerical integration method for calculating motion.
 * **Scaled Distances:** Orbital distances are scaled up from realistic AU values for better visualization. Initial velocities are calculated based on these scaled distances.
+* **Planet Texturing:** Applies surface textures to the Sun and planets.
 * **Axial Tilt:** Simulates the approximate axial tilt of each planet relative to the orbital plane.
 * **Planetary Rotation:** Simulates the visual rotation of planets on their tilted axes.
 * **Dynamic Orbit Trails:** Visual trails follow each planet, showing its recent path. Uses pre-allocated buffers for efficiency.
+* **Starfield Background:** Displays a star map on an inverted skysphere surrounding the scene.
 * **3D Visualization:** Renders the system in 3D using Three.js.
-* **Interactive Camera:** Uses Three.js `OrbitControls` to allow panning, zooming, and rotating the view.
 * **UI Time Controls:** Allows pausing/resuming the simulation and adjusting its speed via a slider.
 * **UI Orbit Trail Toggle:** Allows showing/hiding the orbit trails via a checkbox.
 
