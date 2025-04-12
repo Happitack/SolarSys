@@ -1,5 +1,3 @@
-Markdown
-
 # Solar System Simulation (TypeScript & Three.js)
 
 ## Live Demo
