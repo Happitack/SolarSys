@@ -19,7 +19,6 @@ The primary goal is to serve as a portfolio piece demonstrating skills in TypeSc
 * **Interactive Camera:** Uses Three.js `OrbitControls` to allow panning, zooming, and rotating the view.
 * **UI Time Controls:** Allows pausing/resuming the simulation and adjusting its speed via a slider.
 * **UI Orbit Trail Toggle:** Allows showing/hiding the orbit trails via a checkbox.
-* **Modular Code Structure:** Refactored into modules for configuration (`config.ts`), scene setup (`sceneSetup.ts`), simulation object management (`simulation/SolarSystem.ts`), physics logic (`simulation/physics.ts`), and main orchestration (`main.ts`).
 
 ## Technologies Used
 
