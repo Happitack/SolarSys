@@ -15,39 +15,47 @@ export class SolarSystem {
         this._createSolarSystemObjects();
     }
 
-    private _createPlanetBody(name: string, mass: number, position: THREE.Vector3, velocity: THREE.Vector3, color: number, visualRadius: number): CelestialBody {
-        const geometry = new THREE.SphereGeometry(visualRadius, 32, 16);
-        const material = new THREE.MeshPhongMaterial({ color: color, shininess: 10 });
-        const mesh = new THREE.Mesh(geometry, material);
-        mesh.name = name;
-        const body = new CelestialBody(name, mass, position, velocity, mesh);
-        return body;
-    }
-
     // Creates all the objects and adds them to the scene/internal lists
     private _createSolarSystemObjects(): void {
-        // Sun
+        const textureLoader = new THREE.TextureLoader();
+
+        // --- Sun ---
         const sunGeometry = new THREE.SphereGeometry(config.SUN_VISUAL_RADIUS, 32, 16);
-        const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+        const sunTexture = textureLoader.load(config.SUN_TEXTURE_FILE);
+        const sunMaterial = new THREE.MeshBasicMaterial({ map: sunTexture });
         const sunMesh = new THREE.Mesh(sunGeometry, sunMaterial);
-        const sun = new CelestialBody('Sun', config.SUN_MASS, new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, 0), sunMesh);
+        const sun = new CelestialBody('Sun', config.SUN_MASS, new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, 0), sunMesh, 0);
         this.scene.add(sunMesh);
         this.bodies.push(sun);
         this.pointLight.position.copy(sun.position); // Position the light
 
-        // Planets
+        // --- Planets ---
         config.PLANETS_DATA.forEach(p => {
             const scaled_a = p.a * config.DISTANCE_SCALE;
             const recalculated_v = Math.sqrt(G * config.SUN_MASS / scaled_a);
+            const planetTexture = textureLoader.load(p.textureFile);
 
-            const planetBody = this._createPlanetBody(
-                p.name, p.mass,
-                new THREE.Vector3(scaled_a, 0, 0), new THREE.Vector3(0, recalculated_v, 0),
-                p.color, p.visualRadius
-            );
+            // --- Modify Planet Material Creation ---
+            const planetGeometry = new THREE.SphereGeometry(p.visualRadius, 32, 16);
+            const planetMaterial = new THREE.MeshPhongMaterial({
+                map: planetTexture,
+                shininess: 100
+            });
+            const planetMesh = new THREE.Mesh(planetGeometry, planetMaterial);
+            planetMesh.name = p.name;
+            // Apply axialt tilt rotation
+            planetMesh.rotation.z = THREE.MathUtils.degToRad(p.axialTilt);
 
-            this.scene.add(planetBody.mesh); // Add mesh to the scene passed in constructor
-            this.bodies.push(planetBody);    // Add body to internal list
+            // Create body using the new mesh
+            const planetBody = new CelestialBody(p.name, 
+                p.mass, 
+                new THREE.Vector3(scaled_a, 0, 0), 
+                new THREE.Vector3(0, recalculated_v, 0), 
+                planetMesh,
+                p.rotationFactor);
+
+            this.scene.add(planetBody.mesh);
+            this.bodies.push(planetBody);
 
             // Create orbit line
             const orbitGeometry = new THREE.BufferGeometry();
@@ -71,6 +79,10 @@ export class SolarSystem {
                 // Ensure point light follows the Sun if it ever moves
                 this.pointLight.position.copy(body.position);
             } else {
+                // Update rotation for planets
+                const angleIncrement = body.rotationFactor * config.VISUAL_ROTATION_SCALE_FACTOR * config.DT;
+                body.mesh.rotation.y += angleIncrement; // Rotate around local Y axis
+
                 // Update Orbit Trail
                 body.pathPoints.push(body.position.clone());
                 if (body.pathPoints.length > config.MAX_TRAIL_POINTS) {

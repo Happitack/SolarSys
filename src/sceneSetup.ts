@@ -21,17 +21,17 @@ export function setupSceneGraph(): SceneElements {
         0.1, // near clipping plane
         10000 // far clipping plane 
     );
-    camera.position.set( 0, 150, 350); // Initial camera position 
+    camera.position.set( 0, 5, 10); // Initial camera position 
 
     // --- Renderer Setup ---
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize( window.innerWidth, window.innerHeight );
 
     // --- Lighting Setup ---
-    const ambientLight = new THREE.AmbientLight( 0x606060 ); // Use a slightly brighter ambient light
+    const ambientLight = new THREE.AmbientLight( 0x606060, 1 ); // Use a slightly brighter ambient light
     scene.add( ambientLight );
 
-    const pointLight = new THREE.PointLight( 0xffffff, 1.5, 0, 1 ); // Realistic decay
+    const pointLight = new THREE.PointLight( 0xffffff, 4, 0, 1 ); // Realistic decay
     scene.add( pointLight );
 
     // --- Controls Setup ---
