@@ -1,7 +1,7 @@
 // --- Simulation Constants ---
 export const DT = 0.001; // Delta time step (fraction of a year) - Uppercase convention for exported constants
-export const DISTANCE_SCALE = 10.0; // Factor to scale orbital distances for visualization
-export const MAX_TRAIL_POINTS = 11500; // Max points in orbit trails
+export const DISTANCE_SCALE = 5.0; // Factor to scale orbital distances for visualization
+export const MAX_TRAIL_POINTS = 16384; // Max points in orbit trails
 
 // --- Body Properties ---
 export const SUN_MASS = 1.0; // Mass of the Sun in solar mass units
