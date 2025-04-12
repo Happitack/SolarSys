@@ -22,7 +22,7 @@ export interface PlanetData {
 }
 
 export const PLANETS_DATA: PlanetData[] = [
-    // Name, Mass (Solar), Orbit Radius (a, AU), Color, Visual Radius (arbitrary units)
+    // Name, Mass (Solar), Orbit Radius (a, AU), Color, Visual Radius (arbitrary units), Texture File, Axial Tilt (degrees), Rotation Factor
     { name: 'Mercury', mass: 1.65e-7, a: 0.39, color: 0xAAAAAA, visualRadius: 0.03, textureFile: '../textures/mercury.jpg', axialTilt: 0.034, rotationFactor: 0.2 },
     { name: 'Venus',   mass: 2.45e-6, a: 0.72, color: 0xD4A017, visualRadius: 0.05, textureFile: '../textures/venus.jpg', axialTilt: 177.4, rotationFactor: -0.1  },
     { name: 'Earth',   mass: 3.00e-6, a: 1.00, color: 0x0000FF, visualRadius: 0.05, textureFile: '../textures/earth.jpg', axialTilt: 23.44, rotationFactor: 1.0  },

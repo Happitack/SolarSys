@@ -22,8 +22,10 @@ export class SolarSystem {
         // --- Sun ---
         const sunGeometry = new THREE.SphereGeometry(config.SUN_VISUAL_RADIUS, 32, 16);
         const sunTexture = textureLoader.load(config.SUN_TEXTURE_FILE);
-        const sunMaterial = new THREE.MeshBasicMaterial({ map: sunTexture });
+        sunTexture.colorSpace = THREE.SRGBColorSpace; 
+        const sunMaterial = new THREE.MeshPhongMaterial({ map: sunTexture, emissiveMap: sunTexture, emissiveIntensity: 1, emissive: 0xffffff, lightMap: sunTexture, lightMapIntensity: 2 });
         const sunMesh = new THREE.Mesh(sunGeometry, sunMaterial);
+        sunMesh.rotation.x = THREE.MathUtils.degToRad(90); // Apply rotation
         const sun = new CelestialBody('Sun', config.SUN_MASS, new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, 0), sunMesh, 0);
         this.scene.add(sunMesh);
         this.bodies.push(sun);
@@ -34,6 +36,7 @@ export class SolarSystem {
             const scaled_a = p.a * config.DISTANCE_SCALE;
             const recalculated_v = Math.sqrt(G * config.SUN_MASS / scaled_a);
             const planetTexture = textureLoader.load(p.textureFile);
+            planetTexture.colorSpace = THREE.SRGBColorSpace;
 
             // --- Modify Planet Material Creation ---
             const planetGeometry = new THREE.SphereGeometry(p.visualRadius, 32, 16);

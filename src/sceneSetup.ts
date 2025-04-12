@@ -14,6 +14,36 @@ export function setupSceneGraph(): SceneElements {
     // --- Scene Setup ---
     const scene = new THREE.Scene();
 
+    // --- Texture Loader for Background ---
+    const textureLoader = new THREE.TextureLoader();
+
+    // --- Renderer Setup ---
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize( window.innerWidth, window.innerHeight );
+
+    // --- Skysphere Background ---
+    const starTexture = textureLoader.load('/textures/8k_stars.jpg'); // Replace 'stars.jpg' with YOUR filename
+    //starTexture.wrapS = THREE.RepeatWrapping; // Optional: Helps if texture edges don't perfectly align
+    // starTexture.repeat.x = -1; // Usually not needed unless texture is mirrored
+
+    // --- Explicitly Set Filtering & Encoding ---
+    starTexture.minFilter = THREE.LinearMipmapLinearFilter; // Default - smooth mipmapping
+    starTexture.magFilter = THREE.LinearFilter; // Default - smooth magnification
+    const maxAnisotropy = renderer.capabilities.getMaxAnisotropy();
+    starTexture.anisotropy = maxAnisotropy; // Keep anisotropy
+    starTexture.colorSpace = THREE.SRGBColorSpace; // Set color space for texture
+    starTexture.needsUpdate = true; // Ensure updates are applied
+
+    const skyGeometry = new THREE.SphereGeometry(3000, 64, 64); // Radius, Width Segments, Height Segments
+    const skyMaterial = new THREE.MeshBasicMaterial({
+        map: starTexture,
+        side: THREE.BackSide
+    });
+
+    // Create the skysphere mesh
+    const skysphere = new THREE.Mesh(skyGeometry, skyMaterial);
+    scene.add(skysphere); // Add skysphere to the scene
+
     // --- Camera Setup ---
     const camera = new THREE.PerspectiveCamera(
         75, // fov
@@ -23,15 +53,12 @@ export function setupSceneGraph(): SceneElements {
     );
     camera.position.set( 0, 5, 10); // Initial camera position 
 
-    // --- Renderer Setup ---
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize( window.innerWidth, window.innerHeight );
-
     // --- Lighting Setup ---
     const ambientLight = new THREE.AmbientLight( 0x606060, 1 ); // Use a slightly brighter ambient light
     scene.add( ambientLight );
 
     const pointLight = new THREE.PointLight( 0xffffff, 4, 0, 1 ); // Realistic decay
+    pointLight.castShadow = true; // Enable shadows for the point light
     scene.add( pointLight );
 
     // --- Controls Setup ---
