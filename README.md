@@ -26,10 +26,8 @@ The primary goal is to serve as a portfolio piece demonstrating skills in TypeSc
 * **Dynamic Orbit Trails:** Visual trails follow each planet, showing its recent path. Uses pre-allocated buffers for efficiency.
 * **Starfield Background:** Displays a star map on an inverted skysphere surrounding the scene.
 * **3D Visualization:** Renders the system in 3D using Three.js.
-* **Interactive Camera:** Uses Three.js `OrbitControls` to allow panning, zooming, and rotating the view.
 * **UI Time Controls:** Allows pausing/resuming the simulation and adjusting its speed via a slider.
 * **UI Orbit Trail Toggle:** Allows showing/hiding the orbit trails via a checkbox.
-* **Modular Code Structure:** Refactored into modules for configuration (`config.ts`), scene setup (`sceneSetup.ts`), simulation object management (`simulation/SolarSystem.ts`), physics logic (`simulation/physics.ts`), and main orchestration (`main.ts`).
 
 ## Technologies Used
 
