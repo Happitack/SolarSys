@@ -52,7 +52,6 @@ To run this simulation locally, follow these steps:
 
 ## Planned Changes (Ideas)
 
-* Apply textures to celestial bodies.
 * Add a starfield background.
 * Implement UI controls for simulation time (pause, speed).
 * Implement UI controls for selection/focus of indiviudal bodies
