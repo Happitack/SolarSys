@@ -5,6 +5,7 @@ export class CelestialBody {
     mass: number;
     position: THREE.Vector3; // current position in 3d space
     velocity: THREE.Vector3; // current velocity in 3d space
+    acceleration: THREE.Vector3; // current acceleration in 3d space
     mesh: THREE.Mesh;
 
     constructor(
@@ -18,8 +19,8 @@ export class CelestialBody {
         this.mass = mass;
         this.position = position;
         this.velocity = velocity;
+        this.acceleration = new THREE.Vector3(0, 0, 0);
         this.mesh = mesh;
-
         this.mesh.position.copy(this.position); // Set initial position of the mesh
     }
 }

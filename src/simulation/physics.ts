@@ -7,12 +7,10 @@ const EPSILON = 1e-6; // Small value to prevent division by zero
 
 // --- Functions ---
 /**
- * Calculates the gravitational force vector exerted by body2 on body1.
- * F = G * (m1 * m2) / r^2
- * The force vector points from body1 towards body2.
- * @param body1 The body experiencing the force.
- * @param body2 The body exerting the force.
- * @returns THREE.Vector3 The force vector acting on body1.
+ * Calculates the gravitational force between two celestial bodies.
+ * @param body1 - The first celestial body.
+ * @param body2 - The second celestial body.
+ * @returns The gravitational force vector acting on body1 due to body2.
  */
 
 function calculateGravitationalForce(body1: CelestialBody, body2: CelestialBody): THREE.Vector3 {
@@ -29,42 +27,80 @@ function calculateGravitationalForce(body1: CelestialBody, body2: CelestialBody)
     return forceVector;
 }
 
-export function updateBodies(bodies: CelestialBody[], dt: number): void {
-    // Calculate total force on each body
-    const forces: Map<CelestialBody, THREE.Vector3> = new Map();
+/**
+ * Calculates the total force on each body basedon their current positions.
+ * @param bodies Array of CelestialBody objects
+ * @returns Map<CelestialBody, THREE.Vector3> - A map of celestial bodies to their respective forces
+ */
 
-    // Initialize forces for bodies
+function calculateAllForces(bodies: CelestialBody[]): Map<CelestialBody, THREE.Vector3> {
+    const forces: Map<CelestialBody, THREE.Vector3> = new Map();
     bodies.forEach(body => {
         forces.set(body, new THREE.Vector3(0, 0, 0));
     });
 
-    // Calculate pairwise forces (N-body calculation)
     for (let i = 0; i < bodies.length; i++) {
         for (let j = i + 1; j < bodies.length; j++) {
             const body1 = bodies[i];
             const body2 = bodies[j];
-
             const force = calculateGravitationalForce(body1, body2);
-
-            // Add force to object 1
-            forces.get(body1)?.add(force);
-            // Add equal and opposite force to object 2
-            forces.get(body2)?.sub(force);
+            forces.get(body1)?.add(force); // Add force to object 1
+            forces.get(body2)?.sub(force); // Add equal and opposite force to object 2
         }
     }
+    return forces;
+}
 
+
+/**
+ * Updates the position and velocity of all celestial bodies using Velocity Verlet integration.
+ * @param bodies Array of CelestialBody objects.
+ * @param dt Time step (in simulation units).
+ */
+
+export function updateBodies(bodies: CelestialBody[], dt: number): void {
+    const oldAccelerations = new Map<CelestialBody, THREE.Vector3>();
     bodies.forEach(body => {
-        const totalForce = forces.get(body);
-        if (!totalForce) return; // Skip if force is undefined
+        oldAccelerations.set(body, body.acceleration.clone()); // Store old acceleration
+    });
 
-        // Calculate acceleration
-        if (body.mass === 0) return; // Prevent division by zero
-        const acceleration = new THREE.Vector3().copy(totalForce).divideScalar(body.mass);
+    // --- Step 1: Update positions ---
+    // p_new = p_old + v_old * dt + 0.5 * a_old * dt^2
+    bodies.forEach(body => {
+        const v_old = body.velocity;
+        const a_old = oldAccelerations.get(body)!;
 
-        // Update velocity
-        body.velocity.addScaledVector(acceleration, dt);
+        body.position.addScaledVector(v_old, dt)
+                     .addScaledVector(a_old, 0.5 * dt * dt);
+    });
 
-        // Update position
-        body.position.addScaledVector(body.velocity, dt);
+    // --- Step 2: Calculate forces and update accelerations ---
+    const newForces = calculateAllForces(bodies);
+    const newAccelerations: Map<CelestialBody, THREE.Vector3> = new Map();
+    bodies.forEach(body => {
+        const totalForce = newForces.get(body)!;
+        if (body.mass === 0) {
+            newAccelerations.set(body, new THREE.Vector3(0, 0, 0)); // No acceleration for massless bodies
+        } else {
+            const acceleration_new = new THREE.Vector3().copy(totalForce).divideScalar(body.mass);
+            newAccelerations.set(body, acceleration_new); 
+        }
+    });
+
+    // --- Step 3: Update velocities ---
+    // v_new = v_old + 0.5 * (a_old + a_new) * dt
+    bodies.forEach(body => {
+        const a_old = oldAccelerations.get(body)!;
+        const a_new = newAccelerations.get(body)!;
+
+        const avg_acceleration = new THREE.Vector3().addVectors(a_old, a_new).multiplyScalar(0.5);
+
+        body.velocity.addScaledVector(avg_acceleration, dt);
+
+    });
+
+    // --- Step 4: Store the new accelerations ---
+    bodies.forEach(body => {
+        body.acceleration.copy(newAccelerations.get(body)!); // Update the acceleration for the next iteration
     });
 }
