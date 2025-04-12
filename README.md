@@ -50,9 +50,9 @@ To run this simulation locally, follow these steps:
 * **Zoom:** Use the mouse scroll wheel.
 * **Pan:** Right-click and drag (or Ctrl/Cmd + Left-click and drag).
 
-## Future Enhancements (Ideas)
+## Planned Changes (Ideas)
 
-* Apply realistic textures to celestial bodies.
+* Apply textures to celestial bodies.
 * Add a starfield background.
 * Implement UI controls for simulation time (pause, speed).
 * Display information about selected bodies.
