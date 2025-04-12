@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { CelestialBody } from './CelestialBody';
 
 // --- Constants ---
-export const G = 1; // Gravitational constant for the simulation
+export const G = 39.478; // Approximately (2 * PI)^2 
 const EPSILON = 1e-6; // Small value to prevent division by zero
 
 // --- Functions ---
