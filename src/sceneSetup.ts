@@ -22,14 +22,14 @@ export function setupSceneGraph(): SceneElements {
     renderer.setSize( window.innerWidth, window.innerHeight );
 
     // --- Skysphere Background ---
-    const starTexture = textureLoader.load('/textures/8k_stars.jpg'); // Replace 'stars.jpg' with YOUR filename
+    const starTexture = textureLoader.load('textures/8k_stars.jpg');
 
     // --- Explicitly Set Filtering & Encoding ---
-    starTexture.minFilter = THREE.LinearMipmapLinearFilter; // Default - smooth mipmapping
-    starTexture.magFilter = THREE.LinearFilter; // Default - smooth magnification
+    starTexture.minFilter = THREE.LinearMipmapLinearFilter; 
+    starTexture.magFilter = THREE.LinearFilter; 
     const maxAnisotropy = renderer.capabilities.getMaxAnisotropy();
-    starTexture.anisotropy = maxAnisotropy; // Keep anisotropy
-    starTexture.colorSpace = THREE.SRGBColorSpace; // Set color space for texture
+    starTexture.anisotropy = maxAnisotropy; 
+    starTexture.colorSpace = THREE.SRGBColorSpace; 
 
     const skyGeometry = new THREE.SphereGeometry(3000, 64, 64); // Radius, Width Segments, Height Segments
     const skyMaterial = new THREE.MeshBasicMaterial({
