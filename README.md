@@ -1,14 +1,3 @@
-That's an excellent idea! Creating a good README.md is essential for any project, especially one intended for a portfolio. It tells visitors (including potential employers) what the project is, why it exists, and crucially, how to get it running.
-
-Let's draft a README based on the current state of your project.
-
-How to Use:
-
-Create a new file named exactly README.md in the root directory of your project (the same level as package.json and src/).
-Copy the content below and paste it into that file.
-Customize the description or add any other details you think are relevant!
-Markdown
-
 # Solar System Simulation (TypeScript & Three.js)
 
 ## Description
