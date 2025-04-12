@@ -4,8 +4,10 @@ import { CelestialBody } from './simulation/CelestialBody';
 import { updateBodies, G } from './simulation/physics';
 
 // --- Simulation Constants ---
-const dt = 0.001; // Delta time step for simulation (fraction of a year)
-const distanceScale = 2;
+const dt = 0.1; // Delta time step for simulation (fraction of a year)
+const distanceScale = 10;
+const sunVisualRadius = 0.3; // Base visual size for the Sun
+const MAX_TRAIL_POINTS = 11500 // Maximum number of points in the trail
 
 // --- Scene Setup ---
 const scene = new THREE.Scene();
@@ -23,20 +25,18 @@ scene.add( pointLight );
 
 // --- Celestial Bodies ---
 // Define visual radii directly for a sensible appearance, NOT based on physical reality.
-const sunVisualRadius = 0.3; // Base visual size for the Sun
-
 const bodies: CelestialBody[] = [];
+const orbitLines = new Map<CelestialBody, THREE.Line>();
 
 // Helper function to create a planet
-function createPlanet(name: string, mass: number, position: THREE.Vector3, velocity: THREE.Vector3, color: number, visualRadius: number): CelestialBody {
+function createPlanetBody(name: string, mass: number, position: THREE.Vector3, velocity: THREE.Vector3, color: number, visualRadius: number): CelestialBody {
     const geometry = new THREE.SphereGeometry(visualRadius, 32, 16);
     const material = new THREE.MeshPhongMaterial({ color: color, shininess: 10 });
     const mesh = new THREE.Mesh(geometry, material);
     mesh.name = name;
+    // Creates the body, associating it with the mesh
     const body = new CelestialBody(name, mass, position, velocity, mesh);
-    scene.add(mesh);
-    bodies.push(body);
-    return body;
+    return body; // Return the created body
 }
 
 // Sun
@@ -61,25 +61,36 @@ const planetsData = [
     { name: 'Neptune', mass: 5.15e-5, a: 30.05, color: 0x00008B, visualRadius: 0.12 },
 ];
 
+// --- Create Planets AND their Orbit Lines ---
 planetsData.forEach(p => {
-    const scaled_a = p.a * distanceScale; // Scale the orbital distance
-
-    // Recalculate initial velocity for a circular orbit at the SCALED distance
-    // v = sqrt(G * M_sun / r)
+    const scaled_a = p.a * distanceScale;
     const recalculated_v = Math.sqrt(G * sunMass / scaled_a);
 
-    createPlanet(
-        p.name,
-        p.mass,
-        new THREE.Vector3(scaled_a, 0, 0),           // Use scaled position
-        new THREE.Vector3(0, recalculated_v, 0),     // Use recalculated velocity
-        p.color,
-        p.visualRadius                               // Use defined visual radius
+    // Create the CelestialBody object using the corrected helper
+    const planetBody = createPlanetBody( // Use corrected function name
+        p.name, p.mass,
+        new THREE.Vector3(scaled_a, 0, 0), new THREE.Vector3(0, recalculated_v, 0),
+        p.color, p.visualRadius
     );
+    scene.add(planetBody.mesh);
+    bodies.push(planetBody);
+
+    // Create the orbit line object
+    const orbitGeometry = new THREE.BufferGeometry();
+
+    // --- Pre-allocate buffer ---
+    const positions = new Float32Array(MAX_TRAIL_POINTS * 3);
+    const positionAttribute = new THREE.BufferAttribute(positions, 3);
+    orbitGeometry.setAttribute('position', positionAttribute);
+
+    const orbitMaterial = new THREE.LineBasicMaterial({ color: 0xAAAAAA , transparent: true, opacity: 0.1 }); 
+    const orbitLine = new THREE.Line(orbitGeometry, orbitMaterial);
+    scene.add(orbitLine);
+    orbitLines.set(planetBody, orbitLine);
 });
 
 // --- Camera Position ---
-camera.position.set( 0, 0, 10);
+camera.position.set( 0, 150, 350);
 camera.lookAt( scene.position );
 
 // --- Controls ---
@@ -87,19 +98,49 @@ const controls = new OrbitControls( camera, renderer.domElement );
 controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
 controls.dampingFactor = 0.05;
 controls.minDistance = 1;
-controls.maxDistance = 3000;
+controls.maxDistance = 5000;
 
 // --- Animation Loop ---
 function animate() {
     controls.update();
     updateBodies( bodies, dt );
+
     bodies.forEach( body => {
         body.mesh.position.copy( body.position );
-        // Update light position if Sun moves (it shouldn't with mass=1, vel=0)
-         if (body.name === 'Sun') {
-             pointLight.position.copy(body.position);
+
+        if (body.name === 'Sun') {
+            pointLight.position.copy(body.position);
+        } else {
+            // Update Orbit Trail
+            body.pathPoints.push(body.position.clone());
+            if (body.pathPoints.length > MAX_TRAIL_POINTS) {
+                body.pathPoints.shift();
+            }
+
+            const line = orbitLines.get(body);
+            if (line && body.pathPoints.length > 1) {
+
+                // --- Update pre-allocated buffer ---
+                const geometry = line.geometry;
+                const positionAttribute = geometry.attributes.position as THREE.BufferAttribute;
+
+                // Copy points from pathPoints array into the buffer attribute's array
+                for (let i = 0; i < body.pathPoints.length; i++) {
+                    const point = body.pathPoints[i];
+                    positionAttribute.array[i * 3 + 0] = point.x;
+                    positionAttribute.array[i * 3 + 1] = point.y;
+                    positionAttribute.array[i * 3 + 2] = point.z;
+                }
+
+                // Tell Three.js how many points to draw (important!)
+                geometry.setDrawRange(0, body.pathPoints.length);
+                positionAttribute.needsUpdate = true;
+                geometry.computeBoundingSphere();
+
+            }
         }
     });
+
     renderer.render( scene, camera );
 }
 
