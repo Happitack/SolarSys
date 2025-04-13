@@ -27,12 +27,14 @@ export class SolarSystem {
         sunTexture.colorSpace = THREE.SRGBColorSpace; 
         const sunMaterial = new THREE.MeshPhongMaterial({ map: sunTexture, emissiveMap: sunTexture, emissiveIntensity: 1, emissive: 0xffffff, lightMap: sunTexture, lightMapIntensity: 2 });
         const sunMesh = new THREE.Mesh(sunGeometry, sunMaterial);
-        sunMesh.rotation.x = THREE.MathUtils.degToRad(90); // Apply hacky rotation
         const sun = new CelestialBody('Sun', config.SUN_MASS, new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, 0), sunMesh, 0);
         sunMesh.position.copy(sun.position);
         this.scene.add(sunMesh);
         this.bodies.push(sun);
         this.pointLight.position.copy(sun.position); // Position the light
+
+        // --- Define World X Axis for Tilt ---
+        const WorldAxisX = new THREE.Vector3(1 ,0 ,0 ) 
 
         // --- Planets ---
         config.PLANETS_DATA.forEach(p => {
@@ -49,13 +51,14 @@ export class SolarSystem {
             });
             const planetMesh = new THREE.Mesh(planetGeometry, planetMaterial);
             planetMesh.name = p.name;
-            planetMesh.rotation.z = THREE.MathUtils.degToRad(p.axialTilt);
+
+            planetMesh.rotateOnWorldAxis(WorldAxisX, THREE.MathUtils.degToRad(p.axialTilt)); // Rotate on world axis
 
             // Create body using the new mesh
             const planetBody = new CelestialBody(p.name, 
                 p.mass, 
                 new THREE.Vector3(physics_a, 0, 0), 
-                new THREE.Vector3(0, physics_v, 0), 
+                new THREE.Vector3(0, 0, physics_v), 
                 planetMesh,
                 p.rotationFactor);
 
