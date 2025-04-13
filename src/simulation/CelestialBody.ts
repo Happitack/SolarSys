@@ -26,6 +26,5 @@ export class CelestialBody {
         this.mesh = mesh;
         this.pathPoints = []; 
         this.rotationFactor = rotationFactor;
-        this.mesh.position.copy(this.position); // Set initial position of the mesh
     }
 }
