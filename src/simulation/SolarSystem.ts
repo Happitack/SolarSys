@@ -161,7 +161,7 @@ export class SolarSystem {
 
             // Update moons
             if (body.childMoons && body.childMoons.length > 0) {
-                body.childMoons.forEach(moon => {
+                body.childMoons.forEach((moon: KinematicMoon) => {
                     moon.currentOrbitAngle += moon.orbitSpeed * effectiveDt;
 
                     // Calculate new kinematic position
