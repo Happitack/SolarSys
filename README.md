@@ -18,6 +18,7 @@ The primary goal is to serve as a portfolio piece demonstrating skills in TypeSc
 
 * **N-Body Simulation:** Calculates gravitational forces between all included celestial bodies.
 * **8 Planets + Sun:** Includes the Sun and all eight planets of our solar system.
+* **Kinematic Moon:** Earth's Moon follows a predefined circular path relative to Earth for visual stability.
 * **Velocity Verlet Integration:** Uses a stable numerical integration method for calculating motion.
 * **Scaled Distances:** Orbital distances are scaled up from realistic AU values for better visualization. Initial velocities are calculated based on these scaled distances.
 * **Planet Texturing:** Applies surface textures to the Sun and planets.
