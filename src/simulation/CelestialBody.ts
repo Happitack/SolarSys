@@ -1,5 +1,15 @@
 import * as THREE from 'three';
 
+export interface KinematicMoon {
+    mesh: THREE.Mesh;
+    orbitRadius: number; // in AU
+    orbitSpeed: number; // in AU/year
+    currentOrbitAngle: number; // in radians
+    rotationFactor: number; // spin speed factor
+    pathPoints: THREE.Vector3[]; // Array to store path points for rendering
+    orbitLine: THREE.Line; 
+}
+
 export class CelestialBody {
     name: string;
     mass: number;
@@ -9,6 +19,7 @@ export class CelestialBody {
     mesh: THREE.Mesh;
     pathPoints: THREE.Vector3[]; // Array to store path points for rendering
     rotationFactor: number; // Factor to scale visual rotation speed for planets
+    public childMoons: KinematicMoon[] = [];
 
     constructor(
         name: string,
@@ -26,5 +37,6 @@ export class CelestialBody {
         this.mesh = mesh;
         this.pathPoints = []; 
         this.rotationFactor = rotationFactor;
+        this.childMoons = [];
     }
 }
