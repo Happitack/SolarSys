@@ -68,8 +68,7 @@ To run this simulation locally, follow these steps:
 ## Planned Changes (Ideas)
 
 * **Display Information:** Show details about selected bodies (name, mass, speed, distance).
-* **Variable Orbit Trails:** Implement variable-length orbit trails based on orbital period or distance.
-* **Moons:** Add moons, starting with Earth's Moon.
+* **Moons:** Add moons for all relevant planetary bodies.
 * **Saturn's Rings:** Add a visual representation of Saturn's rings.
 * **UI Enhancements:** More refined UI controls or presentation.
 * **Custom Shaders:** Implement custom shaders for effects like bloom around the Sun/bright objects, planetary atmospheres, etc.
