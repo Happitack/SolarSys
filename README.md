@@ -70,7 +70,7 @@ To run this simulation locally, follow these steps:
 * **Long-Term Stability:** Due to the nature of numerical integration (using a fixed-timestep Velocity Verlet method), tiny errors can accumulate over very long simulated periods or when using high speed multipliers. This can lead to:
     * Slight drifting of the entire system's center of mass.
     * Eventual decay or instability in the orbits of inner planets (like Mercury) after extremely long simulation times.
-* **Moon Physics:** Earth's Moon uses a kinematic (predefined circular path) orbit relative to Earth for visual stability, not a full N-body physics calculation. Achieving stable N-body moon simulation requires high-precision initial condition data or more advanced integration techniques. I hope to revisit this later when I have more knowledge/infomration about the subject
+* **Moon Physics:** Earth's Moon uses a kinematic (predefined circular path) orbit relative to Earth for visual stability, not a full N-body physics calculation. Achieving stable N-body moon simulation requires high-precision initial condition data or more advanced integration techniques. I hope to revisit this later when I have more knowledge/information about the subject
 
 ## Planned Changes (Ideas)
 
