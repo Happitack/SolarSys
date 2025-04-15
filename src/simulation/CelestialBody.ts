@@ -7,7 +7,8 @@ export interface KinematicMoon {
     currentOrbitAngle: number; // in radians
     rotationFactor: number; // spin speed factor
     pathPoints: THREE.Vector3[]; // Array to store path points for rendering
-    orbitLine: THREE.Line; 
+    orbitLine: THREE.Line;
+    maxTrailPoints: number; // Max points in orbit trails 
 }
 
 export class CelestialBody {
@@ -19,6 +20,7 @@ export class CelestialBody {
     mesh: THREE.Mesh;
     pathPoints: THREE.Vector3[]; // Array to store path points for rendering
     rotationFactor: number; // Factor to scale visual rotation speed for planets
+    maxTrailPoints: number;
     public childMoons: KinematicMoon[] = [];
 
     constructor(
@@ -27,7 +29,8 @@ export class CelestialBody {
         position: THREE.Vector3,
         velocity: THREE.Vector3,
         mesh: THREE.Mesh,
-        rotationFactor: number = 0
+        rotationFactor: number = 0,
+        maxTrailPoints: number = 1000 // Default value for maxTrailPoints
     ) {
         this.name = name;
         this.mass = mass;
@@ -37,6 +40,7 @@ export class CelestialBody {
         this.mesh = mesh;
         this.pathPoints = []; 
         this.rotationFactor = rotationFactor;
+        this.maxTrailPoints = maxTrailPoints;
         this.childMoons = [];
     }
 }

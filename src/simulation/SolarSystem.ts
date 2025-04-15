@@ -29,7 +29,7 @@ export class SolarSystem {
         const sunMaterial = new THREE.MeshPhongMaterial({ map: sunTexture, emissiveMap: sunTexture, emissiveIntensity: 1, emissive: 0xffffff, lightMap: sunTexture, lightMapIntensity: 2 });
         const sunMesh = new THREE.Mesh(sunGeometry, sunMaterial);
         sunMesh.rotateOnWorldAxis(worldAxisX, THREE.MathUtils.degToRad(7.25));
-        const sun = new CelestialBody('Sun', config.SUN_MASS, new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, 0), sunMesh, 0);
+        const sun = new CelestialBody('Sun', config.SUN_MASS, new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, 0), sunMesh, 0,);
         sunMesh.position.copy(sun.position);
         this.scene.add(sunMesh);
         this.bodies.push(sun);
@@ -60,15 +60,16 @@ export class SolarSystem {
                 new THREE.Vector3(physics_a, 0, 0), 
                 new THREE.Vector3(0, 0, physics_v), 
                 planetMesh,
-                p.rotationFactor);
-
+                p.rotationFactor,
+                p.maxTrailPoints
+            );
             planetMesh.position.copy(initialPosition).multiplyScalar(this.distanceScale);
             this.scene.add(planetBody.mesh);
             this.bodies.push(planetBody);
 
             // Create orbit line
             const orbitGeometry = new THREE.BufferGeometry();
-            const positions = new Float32Array(config.MAX_TRAIL_POINTS * 3);
+            const positions = new Float32Array(p.maxTrailPoints * 3);
             const positionAttribute = new THREE.BufferAttribute(positions, 3);
             orbitGeometry.setAttribute('position', positionAttribute);
             const orbitMaterial = new THREE.LineBasicMaterial({ color: 0xAAAAAA, transparent: true, opacity: 0.6 });
@@ -76,7 +77,7 @@ export class SolarSystem {
             this.scene.add(orbitLine);
             this.orbitLines.set(planetBody, orbitLine);
 
-            // --- Moons ---
+            // --- Kinematic Moons ---
             if (p.moons && p.moons.length > 0) {
                 p.moons.forEach(m => {
                     const moonTexture = textureLoader.load(m.textureFile);
@@ -100,7 +101,7 @@ export class SolarSystem {
                     this.scene.add(moonMesh);
 
                     const moonOrbitGeometry = new THREE.BufferGeometry();
-                    const moonPositions = new Float32Array(config.MAX_TRAIL_POINTS * 3);
+                    const moonPositions = new Float32Array(p.maxTrailPoints * 3);
                     const moonPositionAttribute = new THREE.BufferAttribute(moonPositions, 3);
                     moonOrbitGeometry.setAttribute('position', moonPositionAttribute);
                     const moonOrbitMaterial = new THREE.LineBasicMaterial({ color: 0x888888, transparent: true, opacity: 0.3 }); // Moon trail color
@@ -114,7 +115,8 @@ export class SolarSystem {
                         currentOrbitAngle: initialAngle,
                         rotationFactor: m.rotationFactor,
                         pathPoints: [], // Initialize empty path points array
-                        orbitLine: moonOrbitLine // Store the line object
+                        orbitLine: moonOrbitLine, // Store the line object
+                        maxTrailPoints: m.maxTrailPoints // Max points in orbit trails
                     });
 
                 });
@@ -135,7 +137,7 @@ export class SolarSystem {
                 const scaledPosition = body.mesh.position.clone();
                 body.pathPoints.push(scaledPosition);
 
-                if (body.pathPoints.length > config.MAX_TRAIL_POINTS) {
+                if (body.pathPoints.length > body.maxTrailPoints) {
                     body.pathPoints.shift(); 
                 }
 
@@ -159,7 +161,7 @@ export class SolarSystem {
                 }
             }
 
-            // Update moons
+            // Update kinematic moons
             if (body.childMoons && body.childMoons.length > 0) {
                 body.childMoons.forEach((moon: KinematicMoon) => {
                     moon.currentOrbitAngle += moon.orbitSpeed * effectiveDt;
@@ -179,7 +181,7 @@ export class SolarSystem {
 
                     // --- Update Moon Orbit Trail ---
                     moon.pathPoints.push(moon.mesh.position.clone()); // Add current world position
-                    if (moon.pathPoints.length > config.MAX_TRAIL_POINTS) {
+                    if (moon.pathPoints.length > moon.maxTrailPoints) {
                         moon.pathPoints.shift(); // Limit length
                     }
 
