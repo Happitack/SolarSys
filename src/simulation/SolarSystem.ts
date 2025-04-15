@@ -29,7 +29,7 @@ export class SolarSystem {
         const sunMaterial = new THREE.MeshPhongMaterial({ map: sunTexture, emissiveMap: sunTexture, emissiveIntensity: 1, emissive: 0xffffff, lightMap: sunTexture, lightMapIntensity: 2 });
         const sunMesh = new THREE.Mesh(sunGeometry, sunMaterial);
         sunMesh.rotateOnWorldAxis(worldAxisX, THREE.MathUtils.degToRad(7.25));
-        const sun = new CelestialBody('Sun', config.SUN_MASS, new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, 0), sunMesh, 0,);
+        const sun = new CelestialBody('Sun', config.SUN_MASS, new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, 0), sunMesh, 0, 0);
         sunMesh.position.copy(sun.position);
         this.scene.add(sunMesh);
         this.bodies.push(sun);
@@ -101,7 +101,7 @@ export class SolarSystem {
                     this.scene.add(moonMesh);
 
                     const moonOrbitGeometry = new THREE.BufferGeometry();
-                    const moonPositions = new Float32Array(p.maxTrailPoints * 3);
+                    const moonPositions = new Float32Array(m.maxTrailPoints * 3);
                     const moonPositionAttribute = new THREE.BufferAttribute(moonPositions, 3);
                     moonOrbitGeometry.setAttribute('position', moonPositionAttribute);
                     const moonOrbitMaterial = new THREE.LineBasicMaterial({ color: 0x888888, transparent: true, opacity: 0.3 }); // Moon trail color
