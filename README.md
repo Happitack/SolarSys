@@ -12,8 +12,6 @@
 
 This project is a physically-based N-body simulation of our solar system, built using TypeScript and the Three.js library for 3D rendering. It aims to model the gravitational interactions between the Sun and the eight planets, calculating their orbits using the Velocity Verlet integration method for reasonable physical accuracy and stability.
 
-The primary goal is to serve as a portfolio piece demonstrating skills in TypeScript, 3D graphics with Three.js, physics simulation implementation, code structuring, front-end development tooling (Vite), and basic UI interaction.
-
 ## Features (Current)
 
 * **N-Body Simulation:** Calculates gravitational forces between all included celestial bodies.
