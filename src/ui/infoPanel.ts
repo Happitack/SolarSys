@@ -1,64 +1,125 @@
 import type { SolarSystem } from '../simulation/SolarSystem';
-import type { CelestialBody } from '../simulation/CelestialBody';
+import type { CelestialBody, KinematicMoon } from '../simulation/CelestialBody';
+
+const EARTH_MASS_IN_SOLAR = 3.00e-6; // Approximate mass of Earth in solar masses
 
 // Interface defining the functions returned by setupInfoPanel
 export interface InfoPanelControls {
-    update: (body: CelestialBody | null, solarSystem: SolarSystem) => void;
+    update: (body: CelestialBody | KinematicMoon | null, solarSystem: SolarSystem) => void;
     hide: () => void;
     isVisible: () => boolean;
 }
 
-// Function to set up the info panel and return control functions
 export function setupInfoPanel(onCloseCallback: () => void): InfoPanelControls {
-
     // --- Get UI Element References ---
     const infoPanel = document.getElementById('info-panel');
     const infoName = document.getElementById('info-name');
     const infoMass = document.getElementById('info-mass');
+    const infoMassUnit = infoMass?.nextSibling; // Get the text node containing the unit ($M_{\odot}$)
     const infoDistanceSun = document.getElementById('info-distance-sun');
     const infoVelocity = document.getElementById('info-velocity');
     const closeInfoBtn = document.getElementById('close-info-btn');
+    const infoDistanceSunLabel = infoDistanceSun?.parentElement?.querySelector('strong'); // Find label
+    const infoVelocityLabel = infoVelocity?.parentElement?.querySelector('strong');     // Find label
+
 
     let visible = false;
 
     // --- Panel Update Logic ---
-    function update(body: CelestialBody | null, solarSystem: SolarSystem) {
-        if (body && infoPanel && infoName && infoMass && infoDistanceSun && infoVelocity) {
-            infoName.textContent = body.name; // [cite: uploaded:src/simulation/CelestialBody.ts]
-            infoMass.textContent = body.mass.toExponential(2); // [cite: uploaded:src/simulation/CelestialBody.ts]
+    function update(body: CelestialBody | KinematicMoon | null, solarSystem: SolarSystem) {
+        if (!body || !infoPanel || !infoName || !infoMass || !infoMassUnit || !infoDistanceSun || !infoVelocity || !infoDistanceSunLabel || !infoVelocityLabel) {
+            hide();
+            return;
+        }
 
-            // Calculate current distance from Sun (body 0) and velocity magnitude
+        // --- Name and Mass Display Logic ---
+        const massValue = body.mass;
+        let displayMass: string;
+        let displayUnit: string;
+
+        if (body.name === 'Sun') {
+            displayMass = '1.0';
+            displayUnit = 'Solar Mass'; // Use full name
+        } else if (body.name === 'Earth') {
+            displayMass = '1.0';
+            displayUnit = 'Earth Masses';
+        } else {
+            // Calculate relative to Earth's mass
+            const massInEarthUnits = massValue / EARTH_MASS_IN_SOLAR;
+            // Use fixed notation with reasonable precision
+            if (massInEarthUnits >= 10) { // For giants like Jupiter/Saturn
+                displayMass = massInEarthUnits.toFixed(1);
+            } else if (massInEarthUnits >= 0.1) { // For Mars etc.
+                displayMass = massInEarthUnits.toFixed(2);
+            } else { // For Moon, Mercury, Pluto
+                displayMass = massInEarthUnits.toFixed(3);
+            }
+            displayUnit = 'Earth Masses';
+        }
+
+        infoMass.textContent = displayMass;
+        // Update the unit text node directly
+        infoMassUnit.textContent = ` ${displayUnit}`; // Add space before unit
+
+        // --- Type Specific Properties ---
+        if ('position' in body && 'velocity' in body) {
+            infoDistanceSunLabel.textContent = 'Distance from Sun (AU):';
+            infoVelocityLabel.textContent = 'Velocity (AU/yr):';
+
             if (body.name !== 'Sun') {
-                // Ensure solarSystem and its bodies are available
-                if (solarSystem && solarSystem.bodies.length > 0) { // [cite: uploaded:src/simulation/SolarSystem.ts]
-                    const sun = solarSystem.bodies[0]; // Assuming Sun is always the first body [cite: uploaded:src/simulation/SolarSystem.ts]
-                    const distanceFromSun = body.position.distanceTo(sun.position); // Using physics position [cite: uploaded:src/simulation/CelestialBody.ts]
-                    const velocityMag = body.velocity.length(); // Using physics velocity [cite: uploaded:src/simulation/CelestialBody.ts]
+                if (solarSystem && solarSystem.bodies.length > 0) {
+                    const sun = solarSystem.bodies[0];
+                    const distanceFromSun = body.position.distanceTo(sun.position);
+                    const velocityMag = body.velocity.length();
                     infoDistanceSun.textContent = distanceFromSun.toFixed(2);
                     infoVelocity.textContent = velocityMag.toFixed(3);
                 } else {
-                    // Handle case where solarSystem might not be fully initialized yet or Sun is missing
                     infoDistanceSun.textContent = '-';
                     infoVelocity.textContent = '-';
                 }
             } else {
-                // Special case for the Sun
                 infoDistanceSun.textContent = '0.00';
                 infoVelocity.textContent = '0.000';
             }
+        } else if ('mesh' in body && 'orbitRadius' in body) {
+            // Find the parent planet to calculate distance/velocity relative to it or the Sun
+            let parentPlanet: CelestialBody | undefined;
+            for (const planet of solarSystem.bodies) {
+                if (planet.childMoons.includes(body)) { // Check if this moon belongs to the planet
+                    parentPlanet = planet;
+                    break;
+                }
+            }
 
-            infoPanel.style.display = 'block'; // Show the panel
-            visible = true;
+            if (parentPlanet) {
+                infoDistanceSunLabel.textContent = `Distance from ${parentPlanet.name} (Rel AU):`;
+                infoVelocityLabel.textContent = `Orbit Speed (Rel AU/yr):`; // Use configured speed
+
+                const distFromParent = body.mesh.position.distanceTo(parentPlanet.mesh.position);
+                infoDistanceSun.textContent = distFromParent.toFixed(3); // Show distance from parent
+                infoVelocity.textContent = body.orbitSpeed.toFixed(2); // Use the defined orbit speed
+            } else {
+                // Should not happen if moon exists, but handle defensively
+                infoDistanceSunLabel.textContent = 'Distance from Parent:';
+                infoVelocityLabel.textContent = 'Orbit Speed:';
+                infoDistanceSun.textContent = '-';
+                infoVelocity.textContent = '-';
+            }
+
         } else {
-            // If body is null or elements are missing, hide the panel
             hide();
+            return;
         }
+
+
+        infoPanel.style.display = 'block';
+        visible = true;
     }
 
     // --- Panel Hide Logic ---
     function hide() {
         if (infoPanel) {
-            infoPanel.style.display = 'none'; // Hide the panel
+            infoPanel.style.display = 'none';
         }
         visible = false;
     }
@@ -66,19 +127,17 @@ export function setupInfoPanel(onCloseCallback: () => void): InfoPanelControls {
     // --- Close Button Listener ---
     if (closeInfoBtn) {
         closeInfoBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevent click from bubbling up to the canvas
+            e.stopPropagation();
             hide();
-            onCloseCallback(); // Notify main.ts (or caller) that panel was closed
+            onCloseCallback();
             console.log('Info panel closed via button');
         });
     } else {
         console.error("Info panel close button not found!");
     }
 
-    // Initial setup: hide panel
-    hide();
+    hide(); // Initially hidden
 
-    // Return the control functions
     return {
         update,
         hide,

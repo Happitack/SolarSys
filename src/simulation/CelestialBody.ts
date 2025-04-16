@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 
 export interface KinematicMoon {
+    name: string;
+    mass: number;
     mesh: THREE.Mesh;
     orbitRadius: number; // in AU
     orbitSpeed: number; // in AU/year

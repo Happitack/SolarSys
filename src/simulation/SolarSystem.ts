@@ -109,6 +109,8 @@ export class SolarSystem {
                     this.scene.add(moonOrbitLine);
 
                     planetBody.childMoons.push({
+                        name: m.name,
+                        mass: m.mass,
                         mesh: moonMesh,
                         orbitRadius: m.orbitRadius,
                         orbitSpeed: m.orbitSpeed,
