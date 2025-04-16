@@ -4,19 +4,26 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Solar System</title>
-    <script type="module" crossorigin src="/SolarSys/assets/index-BVvAPt_t.js"></script>
-    <link rel="stylesheet" crossorigin href="/SolarSys/assets/index-CfwU4X1v.css">
+    <script type="module" crossorigin src="/SolarSys/assets/index-DHsdTLtK.js"></script>
+    <link rel="stylesheet" crossorigin href="/SolarSys/assets/index-DAwjxj8J.css">
   </head>
   <body>
     <div id="controls">
       <button id="pauseBtn" title="Pause Simulation">⏸️ Pause</button>
       <button id="playBtn" title="Play Simulation" style="display: none;">▶️ Play</button>
-      <label for="speedSlider"> Speed: </label>
-      <input type="range" id="speedSlider" min="0.1" max="10" step="0.1" value="1" title="Simulation Speed">
-      <span id="speedValue">1.0x</span>
-
-      <div class="control-separator">|</div> <input type="checkbox" id="trailsCheckbox" checked title="Toggle Orbit Trails">
+      <span class="control-separator">|</span> <label for="speedSlider"> Speed: </label>
+      <input type="range" id="speedSlider" min="0.1" max="100" step="0.1" value="1.0" title="Simulation Speed"> <span id="speedValue">1.0x</span>
+      <span class="control-separator">|</span> <input type="checkbox" id="trailsCheckbox" checked title="Toggle Orbit Trails">
       <label for="trailsCheckbox">Show Orbits</label>
-    </div>
+    </div>
+
+    <div id="info-panel" style="display: none;"> 
+      <h3 id="info-name">Planet Name</h3>
+      <p><strong>Mass:</strong> <span id="info-mass">-</span> $M_{\odot}$</p>
+      <p><strong>Distance from Sun (AU):</strong> <span id="info-distance-sun">-</span></p>
+      <p><strong>Velocity (AU/yr):</strong> <span id="info-velocity">-</span></p>
+      <button id="close-info-btn">Close</button>
+    </div>
+
   </body>
 </html>
