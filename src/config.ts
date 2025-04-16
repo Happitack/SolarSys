@@ -35,6 +35,7 @@ export interface PlanetData {
     rotationFactor: number; // Rotation speed factor 
     moons?: MoonData[]; // Optional moons
     maxTrailPoints: number;
+    dwarf?: boolean; // Optional property to indicate if it's a dwarf planet
 }
 
 export const PLANETS_DATA: PlanetData[] = [
@@ -52,9 +53,10 @@ export const PLANETS_DATA: PlanetData[] = [
                     maxTrailPoints: 1000 }
             ]
     },
-    { name: 'Mars',    mass: 3.23e-7, a: 1.52, color: 0xFF4500, visualRadius: 0.04, textureFile: 'textures/mars.jpg', axialTilt: 25.19, rotationFactor: 0.9, maxTrailPoints: 15000   },
-    { name: 'Jupiter', mass: 9.55e-4, a: 5.20, color: 0xFFD700, visualRadius: 0.18, textureFile: 'textures/jupiter.jpg', axialTilt: 3.13, rotationFactor: 2.5, maxTrailPoints: 25000   },
-    { name: 'Saturn',  mass: 2.86e-4, a: 9.58, color: 0xF4A460, visualRadius: 0.16, textureFile: 'textures/saturn.jpg', axialTilt: 26.73, rotationFactor: 2.3, maxTrailPoints: 38000   },
-    { name: 'Uranus',  mass: 4.37e-5, a: 19.20, color: 0xADD8E6, visualRadius: 0.12, textureFile: 'textures/uranus.jpg', axialTilt: 97.77, rotationFactor: 1.5, maxTrailPoints: 40000   },
-    { name: 'Neptune', mass: 5.15e-5, a: 30.05, color: 0x00008B, visualRadius: 0.12, textureFile: 'textures/neptune.jpg', axialTilt: 28.32, rotationFactor: 1.4, maxTrailPoints: 55000   },
+    { name: 'Mars',    mass: 3.23e-7, a: 1.52, color: 0xFF4500, visualRadius: 0.04, textureFile: 'textures/mars.jpg', axialTilt: 25.19, rotationFactor: 0.9, maxTrailPoints: 15000 },
+    { name: 'Jupiter', mass: 9.55e-4, a: 5.20, color: 0xFFD700, visualRadius: 0.18, textureFile: 'textures/jupiter.jpg', axialTilt: 3.13, rotationFactor: 2.5, maxTrailPoints: 25000 },
+    { name: 'Saturn',  mass: 2.86e-4, a: 9.58, color: 0xF4A460, visualRadius: 0.16, textureFile: 'textures/saturn.jpg', axialTilt: 26.73, rotationFactor: 2.3, maxTrailPoints: 38000 },
+    { name: 'Uranus',  mass: 4.37e-5, a: 19.20, color: 0xADD8E6, visualRadius: 0.12, textureFile: 'textures/uranus.jpg', axialTilt: 97.77, rotationFactor: 1.5, maxTrailPoints: 40000 },
+    { name: 'Neptune', mass: 5.15e-5, a: 30.05, color: 0x00008B, visualRadius: 0.12, textureFile: 'textures/neptune.jpg', axialTilt: 28.32, rotationFactor: 1.4, maxTrailPoints: 55000 },
+    { name: 'Pluto',   mass: 7.5e-9, a: 39.48, color: 0x8B4513, visualRadius: 0.02, textureFile: 'textures/pluto.jpg', axialTilt: 122.5, rotationFactor: 1.0, maxTrailPoints: 60000, dwarf: true },
 ];

@@ -22,6 +22,7 @@ export class CelestialBody {
     rotationFactor: number; // Factor to scale visual rotation speed for planets
     maxTrailPoints: number;
     public childMoons: KinematicMoon[] = [];
+    public dwarf: boolean = false; // Optional property to indicate if it's a dwarf planet
 
     constructor(
         name: string,
@@ -42,5 +43,6 @@ export class CelestialBody {
         this.rotationFactor = rotationFactor;
         this.maxTrailPoints = maxTrailPoints;
         this.childMoons = [];
+        this.dwarf = false; // Default value for dwarf property
     }
 }
