@@ -42,7 +42,7 @@ To run this simulation locally, follow these steps:
 1.  **Prerequisites:** Ensure you have [Node.js](https://nodejs.org/) (which includes npm) installed on your system.
 2.  **Clone Repository:** Clone this project repository to your local machine using Git:
     ```bash
-    git clone [https://github.com/Happitack/SolarSys](https://github.com/Happitack/SolarSys)
+    git clone https://github.com/Happitack/SolarSys
     cd SolarSys
     ```
 3.  **Install Dependencies:** Open a terminal in the project's root directory and run:
