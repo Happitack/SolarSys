@@ -42,7 +42,7 @@ To run this simulation locally, follow these steps:
 1.  **Prerequisites:** Ensure you have [Node.js](https://nodejs.org/) (which includes npm) installed on your system.
 2.  **Clone Repository:** Clone this project repository to your local machine using Git:
     ```bash
-    git clone [https://github.com/Happitack/SolarSys](https://github.com/Happitack/SolarSys)
+    git clone https://github.com/Happitack/SolarSys
     cd SolarSys
     ```
 3.  **Install Dependencies:** Open a terminal in the project's root directory and run:
@@ -78,4 +78,5 @@ To run this simulation locally, follow these steps:
 * **Saturn's Rings:** Add a visual representation of Saturn's rings.
 * **UI Enhancements:** More refined UI controls or presentation.
 * **Custom Shaders:** Implement custom shaders for effects like bloom around the Sun/bright objects, planetary atmospheres, etc.
+* **Mobile Support:** Implement proper support for mobile devices
 
