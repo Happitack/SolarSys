@@ -13,8 +13,8 @@ export interface InfoPanelControls {
 export function setupInfoPanel(onCloseCallback: () => void): InfoPanelControls {
     // --- Get UI Element References ---
     const infoPanel = document.getElementById('info-panel');
-    const infoName = document.getElementById('info-name');
-    const infoMass = document.getElementById('info-mass');
+    const infoName = document.getElementById('info-name') as HTMLHeadingElement | null; // Explicitly type if possible
+    const infoMass = document.getElementById('info-mass') as HTMLSpanElement | null;
     const infoMassUnit = infoMass?.nextSibling; // Get the text node containing the unit ($M_{\odot}$)
     const infoDistanceSun = document.getElementById('info-distance-sun');
     const infoVelocity = document.getElementById('info-velocity');
@@ -33,6 +33,7 @@ export function setupInfoPanel(onCloseCallback: () => void): InfoPanelControls {
         }
 
         // --- Name and Mass Display Logic ---
+        infoName.textContent = body.name
         const massValue = body.mass;
         let displayMass: string;
         let displayUnit: string;

@@ -77,6 +77,88 @@ export class SolarSystem {
             this.scene.add(orbitLine);
             this.orbitLines.set(planetBody, orbitLine);
 
+              // --- Rings of Saturn ---
+              if (p.name === 'Saturn') {
+                console.log("Creating rings for Saturn...");
+
+                // Define ring geometry parameters relative to Saturn's visual radius (p.visualRadius = 0.16)
+                const innerRadius = p.visualRadius * 1.1; 
+                const outerRadius = p.visualRadius * 2.4;
+                const radialSegments = 1; 
+                const thetaSegments = 128; // Increase for smoother ring
+
+                // Calculate dimensions for the equivalent flat plane
+                const averageRadius = (innerRadius + outerRadius) / 2;
+                const ringCircumference = 2 * Math.PI * averageRadius;
+                const ringRadialWidth = outerRadius - innerRadius;
+
+                // Create the PlaneGeometry
+                const ringPlaneGeometry = new THREE.PlaneGeometry(
+                    ringCircumference,  // Width = Circumference
+                    ringRadialWidth,    // Height = Radial Width
+                    thetaSegments,      // Width Segments
+                    radialSegments      // Height Segments
+                );
+
+                // --- Manipulate Vertices to form a ring ---
+                const posAttribute = ringPlaneGeometry.attributes.position;
+                const normalAttribute = ringPlaneGeometry.attributes.normal; // Keep normals pointing up
+
+                for (let i = 0; i < posAttribute.count; i++) {
+                    const x = posAttribute.getX(i); // Position along circumference in flat plane
+                    const y = posAttribute.getY(i); // Position along radius in flat plane
+
+                    // Calculate radius based on original Y position
+                    // Plane Y goes from -height/2 to +height/2
+                    const radius = innerRadius + ((y + ringRadialWidth / 2) / ringRadialWidth) * ringRadialWidth;
+
+                    // Calculate angle (theta) based on original X position
+                    // Plane X goes from -width/2 to +width/2
+                    const theta = ((x + ringCircumference / 2) / ringCircumference) * 2 * Math.PI;
+
+                    // Calculate new 3D coordinates
+                    const newX = radius * Math.cos(theta);
+                    const newY = 0; // Keep it flat on the mesh's local XY plane initially
+                    const newZ = radius * Math.sin(theta); // Use Z for the other dimension
+
+                    // Set the new vertex position
+                    posAttribute.setXYZ(i, newX, newY, newZ);
+
+                    // Normals should generally point "up" (local Y) for a flat ring
+                    normalAttribute.setXYZ(i, 0, 1, 0);
+
+                }
+                posAttribute.needsUpdate = true; // Update the position attribute
+                normalAttribute.needsUpdate = true; // Update the normal attribute
+                ringPlaneGeometry.computeBoundingSphere(); // Recalculate bounds
+
+                // Load textures
+                const ringColorTexture = textureLoader.load('textures/saturnringcolor.jpg');
+                const ringPatternTexture = textureLoader.load('textures/saturnringpattern.gif'); 
+                ringColorTexture.colorSpace = THREE.SRGBColorSpace;
+
+                // Set texture wrapping and repeating
+                [ringColorTexture, ringPatternTexture].forEach(texture => {
+                    texture.wrapS = THREE.ClampToEdgeWrapping;
+                    texture.wrapT = THREE.ClampToEdgeWrapping;
+                    texture.rotation = Math.PI / 2; // No rotation needed for rings
+                    texture.center.set(0.5, 0.5); 
+                    texture.repeat.set(1, 2); // Adjust repeat values as needed
+                });
+
+                // Create ring material
+                const ringMaterial = new THREE.MeshBasicMaterial({
+                    map: ringColorTexture,
+                    alphaMap: ringPatternTexture,
+                    transparent: true,
+                    side: THREE.DoubleSide,
+                });
+
+                // Create ring mesh
+                const ringMesh = new THREE.Mesh(ringPlaneGeometry, ringMaterial);
+                planetMesh.add(ringMesh);
+            }
+
             // --- Kinematic Moons ---
             if (p.moons && p.moons.length > 0) {
                 p.moons.forEach(m => {
