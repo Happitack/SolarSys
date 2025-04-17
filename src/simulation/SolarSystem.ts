@@ -48,7 +48,7 @@ export class SolarSystem {
             const planetGeometry = new THREE.SphereGeometry(p.visualRadius, 32, 16);
             const planetMaterial = new THREE.MeshPhongMaterial({
                 map: planetTexture,
-                shininess: 100
+                shininess: 0
             });
             const planetMesh = new THREE.Mesh(planetGeometry, planetMaterial);
             planetMesh.name = p.name;
@@ -82,8 +82,8 @@ export class SolarSystem {
                 console.log("Creating rings for Saturn...");
 
                 // Define ring geometry parameters relative to Saturn's visual radius (p.visualRadius = 0.16)
-                const innerRadius = p.visualRadius * 1.1; 
-                const outerRadius = p.visualRadius * 2.4;
+                const innerRadius = p.visualRadius * 1.2; // distance from saturn center to edge
+                const outerRadius = p.visualRadius * 2.0; // 
                 const radialSegments = 1; 
                 const thetaSegments = 128; // Increase for smoother ring
 
@@ -134,7 +134,7 @@ export class SolarSystem {
 
                 // Load textures
                 const ringColorTexture = textureLoader.load('textures/saturnringcolor.jpg');
-                const ringPatternTexture = textureLoader.load('textures/saturnringpattern.gif'); 
+                const ringPatternTexture = textureLoader.load('textures/saturnringpattern.png'); 
                 ringColorTexture.colorSpace = THREE.SRGBColorSpace;
 
                 // Set texture wrapping and repeating
@@ -147,7 +147,7 @@ export class SolarSystem {
                 });
 
                 // Create ring material
-                const ringMaterial = new THREE.MeshBasicMaterial({
+                const ringMaterial = new THREE.MeshPhongMaterial({
                     map: ringColorTexture,
                     alphaMap: ringPatternTexture,
                     transparent: true,

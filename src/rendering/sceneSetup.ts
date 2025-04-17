@@ -54,7 +54,7 @@ export function setupSceneGraph(): SceneElements {
     const ambientLight = new THREE.AmbientLight( 0x606060, 1 ); // Use a slightly brighter ambient light
     scene.add( ambientLight );
 
-    const pointLight = new THREE.PointLight( 0xffffff, 4, 0, 1 ); // Realistic decay
+    const pointLight = new THREE.PointLight( 0xffffff, 10, 0, 0.5 ); // Realistic decay
     pointLight.castShadow = true; // Enable shadows for the point light
     scene.add( pointLight );
 
