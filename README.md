@@ -78,4 +78,5 @@ To run this simulation locally, follow these steps:
 * **Saturn's Rings:** Add a visual representation of Saturn's rings.
 * **UI Enhancements:** More refined UI controls or presentation.
 * **Custom Shaders:** Implement custom shaders for effects like bloom around the Sun/bright objects, planetary atmospheres, etc.
+* **Mobile Support:** Implement proper support for mobile devices
 
